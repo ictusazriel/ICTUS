@@ -76,13 +76,28 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // 4. Prevenir envío por defecto del formulario (simulación)
+    // 4. Enviar formulario a WhatsApp
     const formContacto = document.getElementById("formContacto");
     if(formContacto){
         formContacto.addEventListener("submit", (e) => {
-            e.preventDefault();
-            // Aquí puedes conectar el form a Formspree, Netlify Forms o EmailJS
-            alert("¡Gracias por su mensaje! Un asesor de ICTUS se contactará a la brevedad.");
+            e.preventDefault(); // Evitamos que la página se recargue
+            
+            // Capturamos los datos que ingresó el usuario
+            const nombre = document.getElementById("nombre").value;
+            const empresa = document.getElementById("empresa").value;
+            const telefono = document.getElementById("telefono").value;
+            const mensaje = document.getElementById("mensaje").value;
+            
+            // Armamos el mensaje (los %0A funcionan como la tecla "Enter" para hacer saltos de línea)
+            const textoWhatsApp = `Hola ICTUS, me contacto desde la web.%0A%0A*Nombre:* ${nombre}%0A*Empresa:* ${empresa}%0A*Teléfono:* ${telefono}%0A*Mensaje:* ${mensaje}`;
+            
+            // Número de ICTUS
+            const numeroIctus = "5491159621202";
+            
+            // Abrimos WhatsApp en una pestaña nueva ya con el texto escrito
+            window.open(`https://wa.me/${numeroIctus}?text=${textoWhatsApp}`, '_blank');
+            
+            // Limpiamos los campos del formulario
             formContacto.reset();
         });
     }
