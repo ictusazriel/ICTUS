@@ -187,9 +187,15 @@ ul {
 /* --- Hero Section --- */
 .hero {
     height: 100vh;
-    background: url('https://images.unsplash.com/photo-1565793298595-6a879b1d9492?auto=format&fit=crop&w=1920&q=80') no-range;
+    /* Aquí va la ruta de tu imagen de fondo */
+    background-image: url('https://images.unsplash.com/photo-1565793298595-6a879b1d9492?auto=format&fit=crop&w=1920&q=80');
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
+    
+    /* ¡AQUÍ ESTÁ LA MAGIA DEL PARALLAX! */
+    background-attachment: fixed; 
+    
     position: relative;
     display: flex;
     align-items: center;
@@ -201,12 +207,17 @@ ul {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(10, 42, 67, 0.85); /* Azul corporativo transparente */
+    
+    /* Azul corporativo (10, 42, 67). 
+       El último número (0.65) es la opacidad. 
+       Antes estaba en 0.85. Puedes bajarlo a 0.5 si quieres que la foto se vea aún más. */
+    background-color: rgba(10, 42, 67, 0.65); 
+    z-index: 0;
 }
 
 .hero-content {
     position: relative;
-    z-index: 1;
+    z-index: 1; /* Asegura que el texto y los botones queden por encima de la capa de color */
     color: var(--white);
     max-width: 800px;
 }
