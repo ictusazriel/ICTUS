@@ -481,6 +481,11 @@ ul {
     .slider-btn.next { right: 5px; width: 35px; height: 35px; font-size: 1rem;}
 }
 
+.slider-track .gallery-item .video-ajustado {
+    /* El primer valor es el eje horizontal (centro), el segundo es el vertical */
+    object-position: center 65%; 
+}
+
 /* --- Contacto --- */
 .contact-grid {
     display: grid;
