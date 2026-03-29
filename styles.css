@@ -235,7 +235,6 @@ ul {
 }
 
     .hero-content p strong {
-        color: var(--accent); /* Aplica el mismo celeste de los botones */
         font-weight: 700;     /* Asegura que la letra sea bien gruesa */
     }
 
