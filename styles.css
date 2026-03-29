@@ -611,7 +611,11 @@ footer p {
 }
 
 @media (max-width: 768px) {
-    .menu-toggle { display: block; }
+    .menu-toggle { 
+        display: block; 
+        position: relative; 
+        z-index: 1001; 
+    }
     
     .nav-list {
         position: fixed;
@@ -623,9 +627,14 @@ footer p {
         flex-direction: column;
         justify-content: center;
         transition: right 0.4s ease;
+        /* Le damos un z-index menor al del botón para que pase por debajo */
+        z-index: 1000; 
     }
     
     .nav-list.active { right: 0; }
+    
+    /* ... (aquí mantienes el resto de tu código móvil como lo del slider y textos) ... */
+}
     
     .navbar.scrolled .nav-list a { color: var(--white); }
     
