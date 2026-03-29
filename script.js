@@ -38,38 +38,89 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // --- NUEVO: Lógica del Slider de Galería ---
-    const sliderContainer = document.getElementById("slider-container");
+    // --- Lógica del Slider de Galería (Bucle Perfecto sin Rebobinar) ---
+    const track = document.getElementById("slider-track");
     const btnPrev = document.getElementById("slide-prev");
     const btnNext = document.getElementById("slide-next");
+    const windowContainer = document.getElementById("slider-window");
 
-    if(sliderContainer && btnPrev && btnNext) {
-        // La cantidad a scrollear depende de si estamos en PC (1/3) o celular (entero)
-        const scrollAmount = () => sliderContainer.clientWidth; 
+    if(track && btnPrev && btnNext) {
+        let isAnimating = false; // Evita bugs si hacen muchos clics rápidos
 
-        // Botón Siguiente
-        btnNext.addEventListener("click", () => {
-            sliderContainer.scrollBy({ left: scrollAmount(), behavior: 'smooth' });
+        // Función para avanzar
+        const moveNext = () => {
+            if (isAnimating) return;
+            isAnimating = true;
+
+            const itemWidth = track.firstElementChild.offsetWidth + 20; // 20px es el gap
+
+            // 1. Movemos la pista hacia la izquierda
+            track.style.transition = "transform 0.4s ease-in-out";
+            track.style.transform = `translateX(-${itemWidth}px)`;
+
+            // 2. Al terminar el movimiento (400ms), pasamos la primera foto al final silenciosamente
+            setTimeout(() => {
+                track.style.transition = "none"; 
+                track.appendChild(track.firstElementChild); 
+                track.style.transform = `translateX(0px)`; 
+                isAnimating = false;
+            }, 400); 
+        };
+
+        // Función para retroceder
+        const movePrev = () => {
+            if (isAnimating) return;
+            isAnimating = true;
+
+            const itemWidth = track.firstElementChild.offsetWidth + 20;
+
+            // 1. Pasamos la última foto al principio instantáneamente y sin que se vea
+            track.style.transition = "none";
+            track.prepend(track.lastElementChild);
+            track.style.transform = `translateX(-${itemWidth}px)`;
+            
+            // 2. Forzamos al navegador a registrar el cambio
+            void track.offsetWidth;
+
+            // 3. Movemos la pista a su lugar de forma animada
+            track.style.transition = "transform 0.4s ease-in-out";
+            track.style.transform = `translateX(0px)`;
+
+            setTimeout(() => { isAnimating = false; }, 400);
+        };
+
+        // Eventos de botones
+        btnNext.addEventListener("click", moveNext);
+        btnPrev.addEventListener("click", movePrev);
+
+        // Pase automático cada 3.5 segundos
+        let autoPlay = setInterval(moveNext, 3500);
+
+        // Frenar autoplay al poner el mouse encima
+        windowContainer.addEventListener("mouseenter", () => clearInterval(autoPlay));
+        windowContainer.addEventListener("mouseleave", () => {
+            clearInterval(autoPlay); // Limpiamos por seguridad
+            autoPlay = setInterval(moveNext, 3500);
         });
 
-        // Botón Anterior
-        btnPrev.addEventListener("click", () => {
-            sliderContainer.scrollBy({ left: -scrollAmount(), behavior: 'smooth' });
-        });
+        // --- SOPORTE PARA DESLIZAR CON EL DEDO (CELULARES) ---
+        let touchStartX = 0;
+        let touchEndX = 0;
 
-        // Autoplay (Pasa una foto cada 3.5 segundos)
-        let autoPlay = setInterval(() => {
-            // Si llegamos al final, vuelve rápido al principio. Si no, avanza una foto.
-            if (sliderContainer.scrollLeft + sliderContainer.clientWidth >= sliderContainer.scrollWidth - 10) {
-                sliderContainer.scrollTo({ left: 0, behavior: 'smooth' });
-            } else {
-                sliderContainer.scrollBy({ left: scrollAmount(), behavior: 'smooth' });
-            }
-        }, 3500);
+        windowContainer.addEventListener("touchstart", (e) => {
+            clearInterval(autoPlay);
+            touchStartX = e.changedTouches[0].screenX;
+        }, {passive: true});
 
-        // Si el usuario toca la foto con el dedo en el celular, frenamos el automático para no molestarlo
-        sliderContainer.addEventListener("touchstart", () => clearInterval(autoPlay), {passive: true});
-        sliderContainer.addEventListener("mouseenter", () => clearInterval(autoPlay));
+        windowContainer.addEventListener("touchend", (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            // Si deslizó a la izquierda (Avanza)
+            if (touchStartX - touchEndX > 50) moveNext(); 
+            // Si deslizó a la derecha (Retrocede)
+            if (touchEndX - touchStartX > 50) movePrev(); 
+            
+            autoPlay = setInterval(moveNext, 3500); // Reactivamos autoplay
+        }, {passive: true});
     }
 
     // 3. Animaciones suaves al hacer scroll (Intersection Observer)
