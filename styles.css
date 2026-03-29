@@ -141,10 +141,20 @@ ul {
 }
 
 .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Espacio perfecto entre la imagen y el texto */
     font-size: 1.8rem;
     font-weight: 700;
     color: var(--white);
     letter-spacing: 2px;
+}
+
+.logo-img {
+    height: 40px; /* Este es el alto estándar ideal para barras de navegación */
+    width: auto;  /* Mantiene la proporción original de tu logo */
+    object-fit: contain;
+    transition: var(--transition);
 }
 
 .nav-list {
@@ -474,11 +484,17 @@ ul {
 .slider-btn.next { right: -20px; }
 
 @media (max-width: 768px) {
+
+    .logo-img {
+        height: 32px; /* Lo achicamos apenitas para pantallas chicas */
+    }
+    
     .slider-track .gallery-item {
         flex: 0 0 100%; /* En celular muestra 1 sola foto */
     }
     .slider-btn.prev { left: 5px; width: 35px; height: 35px; font-size: 1rem;}
     .slider-btn.next { right: 5px; width: 35px; height: 35px; font-size: 1rem;}
+    
 }
 
 .slider-track .gallery-item .video-ajustado {
