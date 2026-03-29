@@ -11,20 +11,66 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // 2. Menú móvil (Hamburguesa)
+    // 2. Menú móvil (Hamburguesa transformándose en "X")
     const mobileMenuBtn = document.getElementById("mobile-menu");
     const navList = document.getElementById("nav-list");
+    const menuIcon = mobileMenuBtn.querySelector("i"); // Atrapamos el ícono
 
     mobileMenuBtn.addEventListener("click", () => {
         navList.classList.toggle("active");
+        
+        // Si el menú está abierto, cambiamos a la Cruz (fa-times), sino volvemos a Hamburguesa (fa-bars)
+        if (navList.classList.contains("active")) {
+            menuIcon.classList.remove("fa-bars");
+            menuIcon.classList.add("fa-times");
+        } else {
+            menuIcon.classList.remove("fa-times");
+            menuIcon.classList.add("fa-bars");
+        }
     });
 
-    // Cerrar menú móvil al hacer click en un enlace
+    // Cerrar menú móvil al hacer click en un enlace y volver a poner la hamburguesa
     document.querySelectorAll(".nav-list a").forEach(link => {
         link.addEventListener("click", () => {
             navList.classList.remove("active");
+            menuIcon.classList.remove("fa-times");
+            menuIcon.classList.add("fa-bars");
         });
     });
+
+    // --- NUEVO: Lógica del Slider de Galería ---
+    const sliderContainer = document.getElementById("slider-container");
+    const btnPrev = document.getElementById("slide-prev");
+    const btnNext = document.getElementById("slide-next");
+
+    if(sliderContainer && btnPrev && btnNext) {
+        // La cantidad a scrollear depende de si estamos en PC (1/3) o celular (entero)
+        const scrollAmount = () => sliderContainer.clientWidth; 
+
+        // Botón Siguiente
+        btnNext.addEventListener("click", () => {
+            sliderContainer.scrollBy({ left: scrollAmount(), behavior: 'smooth' });
+        });
+
+        // Botón Anterior
+        btnPrev.addEventListener("click", () => {
+            sliderContainer.scrollBy({ left: -scrollAmount(), behavior: 'smooth' });
+        });
+
+        // Autoplay (Pasa una foto cada 3.5 segundos)
+        let autoPlay = setInterval(() => {
+            // Si llegamos al final, vuelve rápido al principio. Si no, avanza una foto.
+            if (sliderContainer.scrollLeft + sliderContainer.clientWidth >= sliderContainer.scrollWidth - 10) {
+                sliderContainer.scrollTo({ left: 0, behavior: 'smooth' });
+            } else {
+                sliderContainer.scrollBy({ left: scrollAmount(), behavior: 'smooth' });
+            }
+        }, 3500);
+
+        // Si el usuario toca la foto con el dedo en el celular, frenamos el automático para no molestarlo
+        sliderContainer.addEventListener("touchstart", () => clearInterval(autoPlay), {passive: true});
+        sliderContainer.addEventListener("mouseenter", () => clearInterval(autoPlay));
+    }
 
     // 3. Animaciones suaves al hacer scroll (Intersection Observer)
     const fadeElements = document.querySelectorAll(".fade-in");
