@@ -123,22 +123,23 @@ ul {
     z-index: 1000;
 }
 
-/* --- Comportamiento al hacer scroll --- */
+/* --- Comportamiento del Navbar al hacer scroll --- */
 .navbar.scrolled {
     background-color: var(--white);
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     padding: 15px 0;
 }
 
-/* 1. El Logo y los enlaces normales cambian a azul oscuro para leerse sobre el blanco */
-.navbar.scrolled .logo,
-.navbar.scrolled .nav-list a {
-    color: var(--primary-blue); 
+/* Forzar colores oscuros en el texto y logo */
+#navbar.scrolled .logo,
+#navbar.scrolled .nav-list a {
+    color: var(--primary-blue) !important;
 }
 
-/* 2. EXCEPCIÓN: El botón de Contacto mantiene su texto blanco */
-.navbar.scrolled .nav-list a.btn-nav {
-    color: var(--white) !important; 
+/* Mantener el botón de contacto con su estilo original */
+#navbar.scrolled .nav-list a.btn-nav {
+    color: var(--white) !important;
+    background-color: var(--accent) !important;
 }
 
 .nav-container {
